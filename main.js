@@ -1,1 +1,1 @@
-/* scripts now embedded in index.html */
+/* scripts embedded in index.html */

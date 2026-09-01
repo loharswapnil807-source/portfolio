@@ -1,1 +1,909 @@
-<!-- -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swapnil Lohar — Developer & Researcher</title>
+  <meta name="description" content="Portfolio of Swapnil Lohar — developer and researcher working in C, C++, HTML/CSS and 3D.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── Tokens ── */
+:root {
+  --black:   #0a0a0a;
+  --black-2: #111111;
+  --black-3: #181818;
+  --white:   #f5f5f5;
+  --off:     #e8e8e8;
+  --grey-1:  #a0a0a0;
+  --grey-2:  #6a6a6a;
+  --grey-3:  #3a3a3a;
+  --grey-4:  #222222;
+  --cyan:    #00d4ff;
+  --cyan-dim:rgba(0,212,255,.10);
+  --line:    rgba(255,255,255,.07);
+  --line-2:  rgba(255,255,255,.04);
+  --pad:     clamp(20px, 5vw, 80px);
+  --nav-h:   68px;
+  --ease:    cubic-bezier(.22,.61,.36,1);
+  --ease-out:cubic-bezier(.16,1,.3,1);
+}
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; padding: 0; }
+ul { list-style: none; }
+
+/* ── Grain ── */
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: 200; pointer-events: none;
+  opacity: .025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* ── Nav ── */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h);
+  z-index: 100; display: flex; align-items: center;
+  padding: 0 var(--pad);
+  transition: background .4s, border-color .4s;
+  border-bottom: 1px solid transparent;
+}
+.nav.stuck {
+  background: rgba(10,10,10,.92);
+  backdrop-filter: blur(20px) saturate(120%);
+  -webkit-backdrop-filter: blur(20px) saturate(120%);
+  border-bottom-color: var(--line);
+}
+.nav-brand {
+  display: flex; align-items: center; gap: 12px; flex: 0 0 auto;
+}
+.nav-monogram {
+  width: 36px; height: 36px;
+  border: 1px solid var(--grey-3);
+  display: grid; place-items: center;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px; font-weight: 600; letter-spacing: .06em;
+  color: var(--cyan);
+  transition: border-color .3s, background .3s;
+}
+.nav-monogram:hover { border-color: var(--cyan); background: var(--cyan-dim); }
+.nav-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; font-weight: 500; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--grey-1);
+}
+.nav-links {
+  display: flex; gap: clamp(24px, 3vw, 52px); margin-left: auto;
+}
+.nav-link {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--grey-2); transition: color .3s; position: relative;
+}
+.nav-link::after {
+  content: ''; position: absolute; bottom: -3px; left: 0;
+  width: 0; height: 1px; background: var(--cyan);
+  transition: width .4s var(--ease-out);
+}
+.nav-link:hover { color: var(--white); }
+.nav-link:hover::after { width: 100%; }
+.nav-burger {
+  display: none; margin-left: auto; flex-direction: column;
+  justify-content: center; gap: 6px; width: 28px; height: 28px;
+}
+.nav-burger i {
+  display: block; height: 1px; background: var(--white);
+  transition: width .35s var(--ease-out), transform .35s var(--ease-out), opacity .2s;
+}
+.nav-burger i:nth-child(1) { width: 28px; }
+.nav-burger i:nth-child(2) { width: 18px; }
+.nav-burger i:nth-child(3) { width: 24px; }
+.nav-burger.open i:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.nav-burger.open i:nth-child(2) { opacity: 0; width: 0; }
+.nav-burger.open i:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); width: 28px; }
+
+/* ── Hero ── */
+.hero {
+  position: relative; min-height: 100svh;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 0 var(--pad) clamp(48px, 9vh, 88px);
+  overflow: hidden;
+}
+.hero-dots {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background-image: radial-gradient(circle, rgba(255,255,255,.13) 1px, transparent 1px);
+  background-size: 30px 30px;
+  -webkit-mask-image: radial-gradient(ellipse 85% 75% at 50% 30%, black, transparent 72%);
+  mask-image: radial-gradient(ellipse 85% 75% at 50% 30%, black, transparent 72%);
+}
+.hero-glow {
+  position: absolute; top: -15%; left: -5%; right: -5%; height: 75%;
+  pointer-events: none; z-index: 0;
+  background: radial-gradient(ellipse 55% 45% at 50% 28%, rgba(0,212,255,.065), transparent 68%);
+}
+.hero-content { position: relative; z-index: 1; max-width: 1100px; }
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 10px; margin-bottom: 36px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: .3em; text-transform: uppercase;
+  color: var(--cyan); opacity: 0;
+  animation: fade-in .8s var(--ease-out) .1s forwards;
+}
+.hero-tag::before {
+  content: ''; display: block; width: 28px; height: 1px; background: var(--cyan);
+}
+@keyframes fade-in { to { opacity: 1; } }
+
+.hero-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(52px, 9.5vw, 136px);
+  font-weight: 700; line-height: .94; letter-spacing: -.035em;
+  color: var(--white); margin-bottom: 34px;
+}
+.hero-title .line { display: block; overflow: hidden; }
+.hero-title .line span { display: block; }
+
+.hero-sub {
+  max-width: 500px; font-size: clamp(14px, 1.05vw, 17px);
+  line-height: 1.78; color: var(--grey-1); font-weight: 300;
+  margin-bottom: 44px;
+}
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 0; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 13px 28px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: .22em; text-transform: uppercase;
+  transition: border-color .3s, background .3s, color .3s;
+}
+.btn-solid {
+  background: var(--cyan); border: 1px solid var(--cyan); color: var(--black);
+  font-weight: 500;
+}
+.btn-solid:hover { background: transparent; color: var(--cyan); }
+.btn-outline {
+  border: 1px solid var(--grey-3); color: var(--grey-1);
+}
+.btn-outline:hover { border-color: var(--grey-1); color: var(--white); }
+
+.hero-stats {
+  display: flex; gap: clamp(28px, 5vw, 72px);
+  padding-top: clamp(36px, 6vh, 56px); margin-top: clamp(48px, 8vh, 72px);
+  border-top: 1px solid var(--line);
+}
+.stat b {
+  display: block;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(28px, 3.2vw, 44px); font-weight: 700;
+  letter-spacing: -.03em; color: var(--white); line-height: 1;
+}
+.stat span {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: .26em; text-transform: uppercase;
+  color: var(--grey-2); margin-top: 7px; display: block;
+}
+.scroll-hint {
+  position: absolute; bottom: clamp(28px, 5vh, 44px); right: var(--pad);
+  display: flex; align-items: center; gap: 10px; z-index: 1;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: .3em; text-transform: uppercase;
+  color: var(--grey-2);
+}
+.scroll-track {
+  width: 36px; height: 1px; background: var(--grey-4);
+  position: relative; overflow: hidden;
+}
+.scroll-track i {
+  position: absolute; inset: 0; background: var(--grey-1);
+  transform-origin: left;
+  animation: slide 2.4s cubic-bezier(.65,0,.35,1) infinite;
+}
+@keyframes slide {
+  0%   { transform: scaleX(0); }
+  50%  { transform: scaleX(1); }
+  100% { transform: scaleX(1) translateX(100%); }
+}
+
+/* ── Section base ── */
+.sec {
+  padding: clamp(80px, 13vh, 150px) var(--pad);
+  max-width: calc(1200px + var(--pad) * 2);
+  margin: 0 auto;
+  border-top: 1px solid var(--line);
+}
+.sec-header {
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: clamp(44px, 7vh, 80px);
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+.sec-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: .24em; color: var(--cyan);
+}
+.sec-lbl {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: .24em; text-transform: uppercase;
+  color: var(--grey-2);
+}
+.sec-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(28px, 3.6vw, 52px); font-weight: 600;
+  line-height: 1.12; letter-spacing: -.025em; color: var(--white);
+}
+
+/* ── About ── */
+.about-grid {
+  display: grid; grid-template-columns: minmax(0, .55fr) minmax(0, 1.45fr);
+  gap: clamp(40px, 7vw, 120px); align-items: start;
+}
+.about-deco {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(120px, 17vw, 220px); font-weight: 700;
+  line-height: .78; letter-spacing: -.06em;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--grey-4);
+  text-stroke: 1px var(--grey-4);
+  user-select: none; pointer-events: none;
+}
+.about-body .sec-title { margin-bottom: 28px; }
+.about-body p {
+  font-size: 15px; line-height: 1.82; color: var(--grey-1);
+  margin-bottom: 18px;
+}
+.about-body p strong { color: var(--white); font-weight: 500; }
+.skills-row {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 24px; margin-top: 40px; padding-top: 32px;
+  border-top: 1px solid var(--line);
+}
+.skill-col h4 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: .3em; text-transform: uppercase;
+  color: var(--cyan); margin-bottom: 14px;
+}
+.skill-col li {
+  font-size: 13px; color: var(--grey-1); line-height: 2.1;
+}
+
+/* ── Work ── */
+.work-lead {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(18px, 2.2vw, 30px); font-weight: 400;
+  line-height: 1.45; color: var(--grey-1);
+  max-width: 620px; margin-bottom: clamp(44px, 7vh, 72px);
+}
+.work-lead strong { color: var(--white); font-weight: 600; }
+.cards-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  border: 1px solid var(--grey-3);
+  gap: 1px; background: var(--grey-3);
+}
+.card {
+  background: var(--black); padding: clamp(28px, 3.5vw, 48px);
+  position: relative; overflow: hidden;
+  transition: background .35s;
+}
+.card::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: var(--cyan); transform: scaleX(0); transform-origin: left;
+  transition: transform .55s var(--ease-out);
+}
+.card:hover { background: var(--black-2); }
+.card:hover::before { transform: scaleX(1); }
+.card-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 22px;
+}
+.card-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: .12em; color: var(--grey-2);
+}
+.card-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--cyan); background: var(--cyan-dim);
+  padding: 4px 10px; border: 1px solid rgba(0,212,255,.18);
+}
+.card-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(17px, 1.7vw, 23px); font-weight: 600;
+  line-height: 1.2; letter-spacing: -.015em; color: var(--white);
+  margin-bottom: 5px;
+}
+.card-subtitle {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: .14em; color: var(--grey-2);
+  margin-bottom: 16px;
+}
+.card-desc {
+  font-size: 13px; line-height: 1.78; color: var(--grey-2); margin-bottom: 20px;
+}
+.card-tags {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 22px;
+}
+.card-tags li {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--grey-2); background: var(--black-3);
+  padding: 4px 8px; border: 1px solid var(--grey-3);
+}
+.card-foot {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-top: 18px; border-top: 1px solid var(--line);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: .18em; text-transform: uppercase;
+}
+.card-status { color: #4ade80; }
+.card-type { color: var(--grey-2); }
+
+/* ── Research ── */
+.research-header {
+  display: grid; grid-template-columns: 1fr 1.5fr;
+  gap: clamp(36px, 6vw, 100px); align-items: end;
+  margin-bottom: clamp(44px, 7vh, 72px);
+}
+.research-lead {
+  font-size: 15px; line-height: 1.82; color: var(--grey-1);
+}
+.paper {
+  border-left: 2px solid var(--cyan);
+  padding: clamp(24px, 3vw, 42px) clamp(24px, 3vw, 48px);
+  background: var(--black-2); margin-bottom: 2px;
+  position: relative; overflow: hidden;
+  transition: background .35s;
+}
+.paper::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, rgba(0,212,255,.06), transparent 44%);
+  opacity: 0; transition: opacity .4s;
+}
+.paper:hover { background: var(--black-3); }
+.paper:hover::after { opacity: 1; }
+.paper-meta {
+  display: flex; align-items: center; gap: 14px; margin-bottom: 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: .24em; text-transform: uppercase;
+  position: relative; z-index: 1;
+}
+.paper-idx { color: var(--cyan); }
+.paper-kind {
+  color: var(--grey-2); padding: 3px 10px;
+  border: 1px solid var(--grey-3); background: var(--black-3);
+}
+.paper-yr { margin-left: auto; color: var(--grey-2); }
+.paper-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(15px, 1.4vw, 20px); font-weight: 500;
+  line-height: 1.4; letter-spacing: -.01em;
+  margin-bottom: 12px; position: relative; z-index: 1;
+}
+.paper-abstract {
+  font-size: 13px; line-height: 1.78; color: var(--grey-2);
+  margin-bottom: 18px; position: relative; z-index: 1;
+}
+.paper-tags {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px;
+  position: relative; z-index: 1;
+}
+.paper-tags li {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--grey-2); background: var(--black-3);
+  padding: 3px 8px; border: 1px solid var(--grey-3);
+}
+.paper-foot {
+  display: flex; gap: 24px; padding-top: 16px;
+  border-top: 1px solid var(--line);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--grey-2); position: relative; z-index: 1;
+}
+.paper-foot b { color: var(--grey-1); }
+
+/* ── Contact ── */
+#contact { text-align: center; }
+.contact-big {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(40px, 7.5vw, 108px); font-weight: 700;
+  line-height: .92; letter-spacing: -.04em; margin-bottom: 22px;
+}
+.contact-big em { font-style: normal; color: var(--cyan); }
+.contact-sub {
+  font-size: 15px; line-height: 1.75; color: var(--grey-1);
+  margin-bottom: clamp(44px, 7vh, 72px);
+  max-width: 420px; margin-left: auto; margin-right: auto;
+}
+.contact-links { text-align: left; max-width: 620px; margin: 0 auto; }
+.contact-row {
+  display: flex; align-items: center; gap: 20px;
+  padding: 20px 0; border-bottom: 1px solid var(--line);
+  transition: padding-left .4s var(--ease-out);
+}
+.contact-row:first-child { border-top: 1px solid var(--line); }
+.contact-row:hover { padding-left: 14px; }
+.contact-row:hover .contact-val { color: var(--white); }
+.contact-row:hover .contact-arrow { opacity: 1; transform: none; color: var(--cyan); }
+.c-lbl {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: .28em; text-transform: uppercase;
+  color: var(--grey-2); width: 76px; flex-shrink: 0;
+}
+.contact-val {
+  font-size: 14px; color: var(--grey-1); transition: color .3s;
+}
+.contact-arrow {
+  margin-left: auto; width: 14px; height: 14px; flex-shrink: 0;
+  opacity: 0; transform: translate(-4px, 4px);
+  transition: opacity .4s var(--ease-out), transform .4s var(--ease-out), color .3s;
+}
+
+/* ── Footer ── */
+.foot {
+  border-top: 1px solid var(--line);
+  padding: 22px var(--pad);
+}
+.foot-inner {
+  max-width: calc(1200px + var(--pad) * 2); margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px;
+}
+.foot-brand {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: .14em; color: var(--grey-2);
+}
+.foot-mark {
+  width: 26px; height: 26px; border: 1px solid var(--grey-3);
+  display: grid; place-items: center;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 10px; font-weight: 600; color: var(--cyan);
+}
+.foot-right {
+  display: flex; align-items: center; gap: 24px;
+}
+.foot-copy, .foot-top {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--grey-2);
+}
+.foot-top { transition: color .3s; }
+.foot-top:hover { color: var(--white); }
+
+/* ── Reveal ── */
+[data-rv] { opacity: 0; }
+[data-rv="up"]   { transform: translateY(28px); }
+[data-rv="left"] { transform: translateX(-18px); }
+[data-rv="fade"] { transform: none; }
+[data-rv].in {
+  opacity: 1; transform: none;
+  transition: opacity .85s var(--ease-out), transform .9s var(--ease-out);
+}
+[data-delay="1"].in { transition-delay: 90ms; }
+[data-delay="2"].in { transition-delay: 180ms; }
+[data-delay="3"].in { transition-delay: 270ms; }
+[data-delay="4"].in { transition-delay: 360ms; }
+
+/* ── Mobile menu ── */
+@media (max-width: 768px) {
+  .nav-links {
+    position: fixed; top: 0; right: 0; bottom: 0;
+    width: min(80vw, 300px);
+    background: rgba(10,10,10,.98); border-left: 1px solid var(--line);
+    display: flex; flex-direction: column; gap: 0;
+    padding: calc(var(--nav-h) + 20px) 28px 32px;
+    transform: translateX(100%);
+    transition: transform .5s var(--ease-out);
+    z-index: 99;
+  }
+  .nav-links.open { transform: none; }
+  .nav-link {
+    font-size: 14px; padding: 16px 0;
+    border-bottom: 1px solid var(--line);
+    letter-spacing: .08em;
+  }
+  .nav-burger { display: flex; }
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .about-grid { grid-template-columns: 1fr; gap: 28px; }
+  .research-header { grid-template-columns: 1fr; gap: 18px; }
+}
+@media (max-width: 640px) {
+  .cards-grid { grid-template-columns: 1fr; }
+  .skills-row { grid-template-columns: 1fr 1fr; }
+  .hero-stats { flex-wrap: wrap; gap: 18px 36px; }
+  .scroll-hint { display: none; }
+  .foot-inner { flex-direction: column; align-items: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration:.001ms !important; transition-duration:.001ms !important; }
+  [data-rv] { opacity:1 !important; transform:none !important; }
+  html { scroll-behavior:auto; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<header class="nav" id="nav">
+  <a class="nav-brand" href="#hero" aria-label="Swapnil Lohar — Home">
+    <div class="nav-monogram" aria-hidden="true">SL</div>
+    <span class="nav-name">Swapnil Lohar</span>
+  </a>
+  <nav class="nav-links" id="navlinks" aria-label="Site navigation">
+    <a class="nav-link" href="#about">About</a>
+    <a class="nav-link" href="#work">Work</a>
+    <a class="nav-link" href="#research">Research</a>
+    <a class="nav-link" href="#contact">Contact</a>
+  </nav>
+  <button class="nav-burger" id="burger" aria-label="Toggle menu" aria-expanded="false">
+    <i></i><i></i><i></i>
+  </button>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="hero" aria-label="Introduction">
+  <div class="hero-dots" aria-hidden="true"></div>
+  <div class="hero-glow" aria-hidden="true"></div>
+  <div class="hero-content">
+    <p class="hero-tag">Available for opportunities</p>
+    <h1 class="hero-title">
+      <span class="line" data-rv="up" data-delay="1"><span>SWAPNIL</span></span>
+      <span class="line" data-rv="up" data-delay="2"><span>LOHAR.</span></span>
+    </h1>
+    <p class="hero-sub" data-rv="up" data-delay="3">
+      Developer &amp; researcher working in C, C++, and web. I build systems from first principles and document everything I learn — including a published research paper on Autodesk Maya.
+    </p>
+    <div class="hero-actions" data-rv="fade" data-delay="4">
+      <a class="btn btn-solid" href="#work">View Work</a>
+      <a class="btn btn-outline" href="#contact">Get in Touch</a>
+    </div>
+    <div class="hero-stats" data-rv="up">
+      <div class="stat"><b>4+</b><span>Projects</span></div>
+      <div class="stat"><b>3</b><span>Languages</span></div>
+      <div class="stat"><b>1</b><span>Paper Published</span></div>
+      <div class="stat"><b>'26</b><span>Class</span></div>
+    </div>
+  </div>
+  <div class="scroll-hint" aria-hidden="true">
+    <span>Scroll</span>
+    <span class="scroll-track"><i></i></span>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="sec" id="about" aria-labelledby="about-h">
+  <div class="sec-header" data-rv="fade">
+    <span class="sec-num">01</span>
+    <span class="sec-lbl">About</span>
+  </div>
+  <div class="about-grid">
+    <div aria-hidden="true">
+      <div class="about-deco">01</div>
+    </div>
+    <div class="about-body">
+      <h2 class="sec-title" id="about-h" data-rv="up">
+        Curious by nature.<br>Precise by practice.
+      </h2>
+      <p data-rv="up" data-delay="1">
+        I'm <strong>Swapnil Lohar</strong> — a developer who works across the full stack of software, from low-level C systems to browser-based interfaces and academic 3D research. I care deeply about how things actually work under the hood.
+      </p>
+      <p data-rv="up" data-delay="2">
+        My projects span <strong>terminal game engines in C</strong>, <strong>object-oriented systems in C++</strong>, <strong>multi-page HTML/CSS websites</strong>, and computer graphics simulations. I also research and write — my published paper on Autodesk Maya covers its architecture, history, and industry impact in depth.
+      </p>
+      <div class="skills-row" data-rv="up" data-delay="3">
+        <div class="skill-col">
+          <h4>Languages</h4>
+          <ul>
+            <li>C</li>
+            <li>C++</li>
+            <li>HTML / CSS</li>
+          </ul>
+        </div>
+        <div class="skill-col">
+          <h4>Tools</h4>
+          <ul>
+            <li>VS Code</li>
+            <li>GCC / G++</li>
+            <li>Autodesk Maya</li>
+            <li>Git / GitHub</li>
+          </ul>
+        </div>
+        <div class="skill-col">
+          <h4>Areas</h4>
+          <ul>
+            <li>Systems Programming</li>
+            <li>OOP Design</li>
+            <li>Web Development</li>
+            <li>Tech Research</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WORK -->
+<section class="sec" id="work" aria-labelledby="work-h">
+  <div class="sec-header" data-rv="fade">
+    <span class="sec-num">02</span>
+    <span class="sec-lbl">Work</span>
+  </div>
+  <p class="work-lead" data-rv="up">
+    <strong>Four projects</strong> built from scratch — each one a real system, not a tutorial.
+  </p>
+  <div class="cards-grid">
+
+    <article class="card" data-rv="up" data-delay="1">
+      <div class="card-header">
+        <span class="card-num">01</span>
+        <span class="card-badge">HTML / CSS</span>
+      </div>
+      <h3 class="card-title">Swapnil's Sweets</h3>
+      <p class="card-subtitle">Cake Shop Website</p>
+      <p class="card-desc">A fully-featured multi-page bakery website. Product catalogue, contact page, feedback form, multiple menu sections. Consistent warm design system across all pages.</p>
+      <ul class="card-tags">
+        <li>HTML5</li><li>CSS3</li><li>Multi-page</li><li>Responsive</li>
+      </ul>
+      <div class="card-foot">
+        <span class="card-status">Completed</span>
+        <span class="card-type">Final Microproject</span>
+      </div>
+    </article>
+
+    <article class="card" data-rv="up" data-delay="2">
+      <div class="card-header">
+        <span class="card-num">02</span>
+        <span class="card-badge">C</span>
+      </div>
+      <h3 class="card-title">Terminal Game</h3>
+      <p class="card-subtitle">C Language Engine</p>
+      <p class="card-desc">A terminal-based game in pure C. Manual memory management, game loop design, input handling, and state machine logic. Standalone — no external libraries.</p>
+      <ul class="card-tags">
+        <li>C</li><li>Game Loop</li><li>State Machine</li><li>Terminal I/O</li>
+      </ul>
+      <div class="card-foot">
+        <span class="card-status">Completed</span>
+        <span class="card-type">C Microproject</span>
+      </div>
+    </article>
+
+    <article class="card" data-rv="up" data-delay="3">
+      <div class="card-header">
+        <span class="card-num">03</span>
+        <span class="card-badge">C++</span>
+      </div>
+      <h3 class="card-title">Bunk Tracker</h3>
+      <p class="card-subtitle">OOP Attendance System</p>
+      <p class="card-desc">Object-oriented attendance management in C++. Applies classes, inheritance, encapsulation and polymorphism to model a real-world student tracking problem.</p>
+      <ul class="card-tags">
+        <li>C++</li><li>OOP</li><li>Classes</li><li>Inheritance</li>
+      </ul>
+      <div class="card-foot">
+        <span class="card-status">Completed</span>
+        <span class="card-type">OOP Microproject</span>
+      </div>
+    </article>
+
+    <article class="card" data-rv="up" data-delay="4">
+      <div class="card-header">
+        <span class="card-num">04</span>
+        <span class="card-badge">C</span>
+      </div>
+      <h3 class="card-title">Environment Simulator</h3>
+      <p class="card-subtitle">CGR Microproject</p>
+      <p class="card-desc">A computer graphics &amp; rendering simulation in C. Covers rendering pipelines, scene geometry, and visual output — all at the language level without frameworks.</p>
+      <ul class="card-tags">
+        <li>C</li><li>CGR</li><li>Simulation</li><li>Graphics</li>
+      </ul>
+      <div class="card-foot">
+        <span class="card-status">Completed</span>
+        <span class="card-type">CGR Microproject</span>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- RESEARCH -->
+<section class="sec" id="research" aria-labelledby="research-h">
+  <div class="sec-header" data-rv="fade">
+    <span class="sec-num">03</span>
+    <span class="sec-lbl">Research</span>
+  </div>
+  <div class="research-header">
+    <h2 class="sec-title" id="research-h" data-rv="up">Published<br>work.</h2>
+    <p class="research-lead" data-rv="up" data-delay="1">
+      Beyond building, I document. Technical writing and research sharpen how I think about systems and help me communicate complex ideas with precision.
+    </p>
+  </div>
+
+  <article class="paper" data-rv="left" data-delay="1">
+    <div class="paper-meta">
+      <span class="paper-idx">01</span>
+      <span class="paper-kind">Research Paper</span>
+      <span class="paper-yr">2026</span>
+    </div>
+    <h3 class="paper-title">Autodesk Maya: Evolution, Architecture, and Impact on the 3D Animation and Visual Effects Industry</h3>
+    <p class="paper-abstract">A comprehensive academic paper tracing Maya's origins from Alias|Wavefront through Autodesk acquisition — analysing its node-based dependency graph architecture, MEL/Python scripting ecosystem, rendering pipeline, and profound impact on blockbuster film, television, and game production worldwide.</p>
+    <ul class="paper-tags">
+      <li>Autodesk Maya</li><li>3D Animation</li><li>VFX Pipeline</li>
+      <li>Computer Graphics</li><li>MEL Scripting</li><li>Academic Research</li>
+    </ul>
+    <div class="paper-foot">
+      <span><b>13</b> Sections</span>
+      <span><b>Published</b> 2026</span>
+      <span>Academic Paper</span>
+    </div>
+  </article>
+
+  <article class="paper" data-rv="left" data-delay="2">
+    <div class="paper-meta">
+      <span class="paper-idx">02</span>
+      <span class="paper-kind">Technical Report</span>
+      <span class="paper-yr">2026</span>
+    </div>
+    <h3 class="paper-title">Autodesk Maya Technical Report</h3>
+    <p class="paper-abstract">An accompanying technical report covering hands-on Maya workflows, tools, and production-grade usage patterns for developers and technical directors. Complements the main research paper with applied examples.</p>
+    <ul class="paper-tags">
+      <li>Maya Workflows</li><li>Technical Writing</li><li>3D Production</li>
+    </ul>
+    <div class="paper-foot">
+      <span><b>Published</b> 2026</span>
+      <span>Technical Report</span>
+    </div>
+  </article>
+</section>
+
+<!-- CONTACT -->
+<section class="sec" id="contact" aria-labelledby="contact-h">
+  <div class="sec-header" data-rv="fade">
+    <span class="sec-num">04</span>
+    <span class="sec-lbl">Contact</span>
+  </div>
+  <h2 class="contact-big" id="contact-h" data-rv="up">
+    LET'S<br>WORK <em>TOGETHER.</em>
+  </h2>
+  <p class="contact-sub" data-rv="up" data-delay="1">
+    Open to internships, collaborations, and interesting problems. If you have something worth building — reach out.
+  </p>
+  <div class="contact-links" data-rv="up" data-delay="2">
+    <a class="contact-row" href="mailto:swapnil@example.com">
+      <span class="c-lbl">Email</span>
+      <span class="contact-val">swapnil@example.com</span>
+      <svg class="contact-arrow" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+        <path d="M3 11 11 3M5 3h6v6" stroke="currentColor" stroke-width="1.3"/>
+      </svg>
+    </a>
+    <a class="contact-row" href="https://github.com/loharswapnil807-source" target="_blank" rel="noopener noreferrer">
+      <span class="c-lbl">GitHub</span>
+      <span class="contact-val">github.com/loharswapnil807-source</span>
+      <svg class="contact-arrow" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+        <path d="M3 11 11 3M5 3h6v6" stroke="currentColor" stroke-width="1.3"/>
+      </svg>
+    </a>
+    <a class="contact-row" href="https://linkedin.com/in/swapnillohar" target="_blank" rel="noopener noreferrer">
+      <span class="c-lbl">LinkedIn</span>
+      <span class="contact-val">linkedin.com/in/swapnillohar</span>
+      <svg class="contact-arrow" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+        <path d="M3 11 11 3M5 3h6v6" stroke="currentColor" stroke-width="1.3"/>
+      </svg>
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="foot">
+  <div class="foot-inner">
+    <div class="foot-brand">
+      <div class="foot-mark" aria-hidden="true">SL</div>
+      <span>Swapnil Lohar</span>
+    </div>
+    <div class="foot-right">
+      <span class="foot-copy">© 2026 — Built with HTML &amp; CSS</span>
+      <a class="foot-top" href="#hero" aria-label="Back to top">↑ TOP</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+'use strict';
+/* ── Scroll reveal ── */
+(function(){
+  var els=document.querySelectorAll('[data-rv]');
+  if(!els.length)return;
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}
+    });
+  },{threshold:0.08,rootMargin:'0px 0px -32px 0px'});
+  els.forEach(function(el){io.observe(el);});
+})();
+
+/* ── Hero title entrance ── */
+(function(){
+  var spans=document.querySelectorAll('.hero-title .line span');
+  spans.forEach(function(s,i){
+    s.style.transform='translateY(108%)';
+    s.style.display='block';
+    s.style.transition='transform 1s cubic-bezier(.16,1,.3,1) '+(i*140+80)+'ms';
+  });
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      spans.forEach(function(s){s.style.transform='none';});
+    });
+  });
+})();
+
+/* ── Sticky nav ── */
+(function(){
+  var nav=document.getElementById('nav');
+  if(!nav)return;
+  function tick(){nav.classList.toggle('stuck',window.scrollY>8);}
+  window.addEventListener('scroll',tick,{passive:true});
+  tick();
+})();
+
+/* ── Mobile menu ── */
+(function(){
+  var burger=document.getElementById('burger');
+  var links=document.getElementById('navlinks');
+  if(!burger||!links)return;
+  burger.addEventListener('click',function(){
+    var open=links.classList.toggle('open');
+    burger.classList.toggle('open',open);
+    burger.setAttribute('aria-expanded',open);
+    document.body.style.overflow=open?'hidden':'';
+  });
+  links.querySelectorAll('.nav-link').forEach(function(l){
+    l.addEventListener('click',function(){
+      links.classList.remove('open');
+      burger.classList.remove('open');
+      burger.setAttribute('aria-expanded','false');
+      document.body.style.overflow='';
+    });
+  });
+  document.addEventListener('click',function(e){
+    if(!document.getElementById('nav').contains(e.target)&&links.classList.contains('open')){
+      links.classList.remove('open');
+      burger.classList.remove('open');
+      burger.setAttribute('aria-expanded','false');
+      document.body.style.overflow='';
+    }
+  });
+})();
+
+/* ── Card tilt ── */
+(function(){
+  if(window.matchMedia('(hover:none)').matches)return;
+  document.querySelectorAll('.card').forEach(function(c){
+    c.addEventListener('mousemove',function(e){
+      var r=c.getBoundingClientRect();
+      var x=(e.clientX-r.left)/r.width-.5;
+      var y=(e.clientY-r.top)/r.height-.5;
+      c.style.transform='perspective(600px) rotateY('+(x*4)+'deg) rotateX('+(-y*3)+'deg)';
+    });
+    c.addEventListener('mouseleave',function(){c.style.transform='';});
+  });
+})();
+</script>
+</body>
+</html>
